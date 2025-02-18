@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AIOStremio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="AIOStremio">
+    <meta name="description" content="A private AIOStremio instance.
+
+        https://github.com/Viren070/AIOStremio">
+    <meta name="keywords" content="aiostremio">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --text-color: #ffffff;
+                --input-bg: #333;
+                --border-color: #444;
+                --stats-bg: #242424;
+                --button-bg: #2563eb;
+                --button-hover: #1d4ed8;
+                --notice-bg: #854d0f;
+                --notice-border: #a16207;
+                --notice-text: #fef3c7;
+                --result-bg: #242424;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-color: #ffffff;
+                --text-color: #1a1a1a;
+                --input-bg: #ffffff;
+                --border-color: #e5e7eb;
+                --stats-bg: #f8f9fa;
+                --button-bg: #2563eb;
+                --button-hover: #1d4ed8;
+                --notice-bg: #fef3c7;
+                --notice-border: #fcd34d;
+                --notice-text: #854d0f;
+                --result-bg: #f8f9fa;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.1s;
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .admin-button:hover {
+            background-color: var(--button-hover);
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input {
+            padding: 0.75rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--button-bg);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:not(.toggle-password):active {
+            transform: translateY(1px);
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--result-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            display: none;
+        }
+
+        .result pre {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .stats {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--stats-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+        }
+
+        .notice {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--notice-bg);
+            border: 1px solid var(--notice-border);
+            color: var(--notice-text);
+            font-weight: 500;
+            text-align: center;
+            border-radius: 0.75rem;
+        }
+
+        .notice a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        .notice a:hover {
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .notice, .stats, .result {
+                margin: 1.5rem 0;
+                padding: 1rem;
+            }
+        }
+
+        .config-url-container {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .config-url-container pre {
+            flex-grow: 1;
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            word-wrap: break-word;
+            padding: 8px 42px 8px 10px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #374151;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            line-height: 1;
+        }
+
+        .toggle-password.active {
+            background: var(--button-bg);
+            color: white;
+        }
+
+        .toggle-password:hover {
+            opacity: 0.9;
+        }
+
+        .eye-icon {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AIOStremio</h1>
+        <a href="/admin" class="admin-button">Admin Panel</a>
+    </div>
+    
+    <div class="notice">
+        <p>Invite-only page. Ask for access or buy TorBox <a href="https://torbox.app/subscription?referral=fe897519-fa8d-402d-bdb6-15570c60eff2">here</a>.</p>
+    </div>
+
+    <form id="configForm">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <button type="button" onclick="handleAddToStremio()">Add to Stremio</button>
+            <button type="button" onclick="handleWatchInBrowser()">Watch in Browser</button>
+        </div>
+    </form>
+
+    <div id="result" class="result">
+        <h3>Your Configuration URL:</h3>
+        <div class="config-url-container">
+            <pre id="configUrl"></pre>
+            <button id="togglePassword" class="toggle-password" title="Toggle password visibility">
+                <span class="eye-icon">👁️</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let isPasswordVisible = false;
+        let originalUrl = '';
+
+        function censorPassword(url) {
+            const censored = '•'.repeat(url.length);
+            return censored.match(/.{1,50}/g).join('\n');
+        }
+
+        function togglePasswordVisibility() {
+            const configUrlElement = document.getElementById('configUrl');
+            const toggleButton = document.getElementById('togglePassword');
+            isPasswordVisible = !isPasswordVisible;
+            
+            configUrlElement.textContent = isPasswordVisible ? originalUrl : censorPassword(originalUrl);
+            toggleButton.title = isPasswordVisible ? "Hide URL" : "Show URL";
+            toggleButton.classList.toggle('active', isPasswordVisible);
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', togglePasswordVisibility);
+
+        async function generateConfig() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                const response = await fetch('/configure/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success' && result.url) {
+                    originalUrl = result.url;
+                    return result.url;
+                } else {
+                    const errorMessage = result.detail || result.message || 'Error generating configuration';
+                    throw new Error(errorMessage);
+                }
+            } catch (error) {
+                console.error('Request failed:', error);
+                alert('Network error occurred while generating configuration');
+                throw error;
+            }
+        }
+
+        async function handleAddToStremio() {
+            try {
+                const url = await generateConfig();
+                isPasswordVisible = false;
+                document.getElementById('configUrl').textContent = censorPassword(url);
+                document.getElementById('result').style.display = 'block';
+                const cleanUrl = url.replace(/^https?:\/\//, '');
+                window.location.href = 'stremio://' + cleanUrl;
+            } catch (error) {
+                // Error already handled in generateConfig
+            }
+        }
+
+        async function handleWatchInBrowser() {
+            try {
+                const url = await generateConfig();
+                const userPath = new URL(url).pathname.split('/')[1];
+                window.location.href = `/${userPath}/watch`;
+            } catch (error) {
+                // Error already handled in generateConfig
+            }
+        }
+    </script>
+</body>
+</html> 
