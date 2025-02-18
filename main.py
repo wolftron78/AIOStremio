@@ -165,7 +165,7 @@ async def sanity_check():
             continue
 
     logger.info("Config | Checking config...")
-    config_path = os.path.join(os.path.dirname(__file__), "data")
+    config_path = os.path.join(os.path.dirname(__file__), "data", "config.json")
     with open(config_path, "r") as f:
         example_config = json.load(f)
 
