@@ -165,8 +165,8 @@ async def sanity_check():
             continue
 
     logger.info("Config | Checking config...")
-
-    with open("config.json.example", "r") as f:
+    config_path = os.path.join(os.path.dirname(__file__), "data")
+    with open(config_path, "r") as f:
         example_config = json.load(f)
 
     def validate_config_structure(example: dict, current: dict, path: str = ""):
