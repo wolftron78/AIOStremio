@@ -1,8 +1,10 @@
+> [!IMPORTANT]
+> I (Viren070) am not the developer of AIOStremio. (I did develop [AIOStreams](https://github.com/Viren070/AIOStreams), however.) This is a backup repository, modified to make deployment slightly easier.
+
 # AIOStremio
 
 [![commit activity](https://img.shields.io/github/commit-activity/m/viren070/aiostremio)](https://github.com/viren070/aiostremio/commits)
 [![last commit](https://img.shields.io/github/last-commit/viren070/aiostremio)](https://github.com/viren070/aiostremio/commits)
-[![chat](https://img.shields.io/discord/1178091792504201357?logo=discord&logoColor=white)](https://discord.gg/MkCvXWjeAx)
 
 [![Stremio](https://img.shields.io/badge/Stremio-mediumpurple)](https://stremio.com/)
 [![Vidi](https://img.shields.io/badge/Vidi-black)](https://vidi.plomo.se/)
