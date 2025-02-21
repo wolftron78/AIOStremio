@@ -24,7 +24,13 @@ class TorrentioService(StreamingService):
     async def _fetch_from_torrentio(self, url: str) -> Dict:
         async with httpx.AsyncClient() as client:
             try:
-                response = await client.get(url)
+                proxies = None
+                if (os.getenv("ADDON_PROXY")):
+                    proxies = {
+                        "http": os.getenv("ADDON_PROXY"),
+                        "https": os.getenv("ADDON_PROXY"),
+                    }
+                response = await client.get(url, proxies = proxies)
                 response.raise_for_status()
                 data = response.json()
                 logger.debug(f"Torrentio response: {data}")
