@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> I (Viren070) am not the developer of AIOStremio. (I did develop [AIOStreams](https://github.com/Viren070/AIOStreams), however.) This is a backup repository, modified to make deployment slightly easier.
+> I am not the developer of AIOStremio. This is a backup repository.
 
 # AIOStremio
 
