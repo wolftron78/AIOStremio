@@ -1,14 +1,12 @@
 import os
-from typing import Dict, List
-
 import httpx
 from fastapi import HTTPException
+from typing import Dict
 
 from utils.config import config
 from utils.logger import logger
 
 from .base import StreamingService
-
 
 class TorrentioService(StreamingService):
     def __init__(self):
@@ -22,15 +20,16 @@ class TorrentioService(StreamingService):
         return "Torrentio"
 
     async def _fetch_from_torrentio(self, url: str) -> Dict:
-        async with httpx.AsyncClient() as client:
+        proxy_url = os.getenv("ADDON_PROXY")
+        transport = None
+        
+        if proxy_url:
+            # Modern httpx proxy configuration (0.28+)
+            transport = httpx.AsyncHTTPTransport(proxy=proxy_url)
+        
+        async with httpx.AsyncClient(transport=transport) as client:
             try:
-                proxies = None
-                if (os.getenv("ADDON_PROXY")):
-                    proxies = {
-                        "http": os.getenv("ADDON_PROXY"),
-                        "https": os.getenv("ADDON_PROXY"),
-                    }
-                response = await client.get(url, proxies = proxies)
+                response = await client.get(url)
                 response.raise_for_status()
                 data = response.json()
                 logger.debug(f"Torrentio response: {data}")
@@ -38,20 +37,3 @@ class TorrentioService(StreamingService):
             except httpx.HTTPError as e:
                 logger.error(f"Torrentio request failed: {str(e)}")
                 raise HTTPException(status_code=502, detail="Upstream service error")
-
-    async def get_streams(self, meta_id: str) -> List[Dict]:
-        url = f"{self.base_url}/{self.options}/stream/{meta_id}"
-        logger.debug(f"Torrentio stream url: {url}")
-        data = await self._fetch_from_torrentio(url)
-        streams = data.get("streams", [])
-        for stream in streams:
-            stream["service"] = self.name
-
-            stream_name = stream.get("name", "")
-            if stream_name.startswith("["):
-                prefix = stream_name[1:stream_name.find("]")] if "]" in stream_name else ""
-                stream["is_cached"] = "+" in prefix
-            else:
-                stream["is_cached"] = True
-
-        return streams
